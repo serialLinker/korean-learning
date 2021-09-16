@@ -1,1 +1,113 @@
-coucou
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Learning Korean</title>
+        <style>
+            #word {
+                margin-top : 30px;
+            }
+
+            #word, #answer {
+                text-align: center;
+            }
+
+            button, #choice {
+                margin: 0 auto;
+                display: block;
+            }
+
+            #answer {
+                visibility: hidden;
+            }
+
+            .left, .right {
+                width: 0;
+                height: 0;
+                border-left: 15px solid transparent;
+                border-right: 15px solid transparent;
+                border-bottom: 30px solid purple;
+            }
+
+            #word > .content {
+                min-width: 8em;
+                display: inline-block;
+                vertical-align: middle;
+                margin: 0 0 1rem 0;
+                padding: 0.85em 1em;
+                -webkit-appearance: none;
+                border: 1px solid transparent;
+                border-radius: 0;
+                transition: background-color 0.25s ease-out, color 0.25s ease-out;
+                font-size: 2rem;
+                line-height: 1;
+                text-align: center;
+                cursor: pointer;
+                background-color: #1779ba;
+                color: #fefefe;
+            }
+        </style>
+        <script src="script/data.js"></script>
+        <script>
+            nextIndex = 0;
+            currentConfiguration = configurations[0];
+
+            function changeAnswerVisibility() {
+                answerVisible = !answerVisible;
+                changeAnswerVisibility(answerVisible);
+                
+            }
+
+            function changeAnswerVisibility(value) {
+                document.getElementById("answer").style.visibility = value ? "visible" : "hidden";
+            }
+
+            function nextWord() {
+                changeLanguage();
+                nextIndex = (nextIndex+1)%translations.length;
+            }
+
+            function changeLanguage() {
+                changeAnswerVisibility(false);
+                document.getElementById("word").getElementsByClassName("content")[0].innerHTML = translations[nextIndex][currentConfiguration.from];
+                document.getElementById("answer").innerHTML = translations[nextIndex][currentConfiguration.to];                
+            }
+
+            function buildChoiceList() {
+                choice = document.getElementById('choice');
+                for(i = 0; i < configurations.length; i++) {
+                    configuration = configurations[i];
+                    choice.options[choice.options.length] = new Option(configuration.fromLabel + " -> " + configuration.toLabel, i);
+                }                
+                choice.getElementsByTagName('option')[0].selected = 'selected'
+            }
+
+            function changeConfiguration() {
+                var x = document.getElementById("choice").value;
+                currentConfiguration = configurations[x];
+                changeLanguage();
+            }
+
+            window.onload = function() {
+                buildChoiceList();
+                changeConfiguration();
+            };
+        </script>
+    </head>
+    <body>
+        <select id="choice" onchange="changeConfiguration()"></select>
+        
+        <div id="word">
+            <div class="content"></div>
+        </div>
+        <button onclick="changeAnswerVisibility(true)">
+            See answer
+        </button>
+        <p id="answer">
+            
+        </p>
+
+        <button onclick="nextWord()">
+            next
+        </button>
+    </body>
+</html>
